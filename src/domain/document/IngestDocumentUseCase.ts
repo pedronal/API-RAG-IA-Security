@@ -2,7 +2,6 @@ import {StoredDocument} from "./StoredDocument";
 import {IntegrityService} from "../integrity/IntegrityService";
 import {AuditService} from "../audit/AuditService";
 import {DocumentRepository} from "./DocumentRepository";
-import {AuditEvent} from "../audit/AuditEvent";
 import {AuditEventFactory} from "../audit/AuditEventFactory";
 
 export class IngestDocumentUseCase {
