@@ -1,8 +1,8 @@
 import {AuditService} from "../../domain/audit/AuditService";
-import {AuditEventType} from "../../domain/audit/AuditEvent";
+import {AuditEvent} from "../../domain/audit/AuditEvent";
 
 export class ConsoleAuditService implements AuditService {
-    async record(event: AuditEventType): Promise<void> {
+    async record(event: AuditEvent): Promise<void> {
         try {
             console.log(JSON.stringify(event))
         } catch (error) {
