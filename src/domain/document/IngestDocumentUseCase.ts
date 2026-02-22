@@ -20,14 +20,10 @@ export class IngestDocumentUseCase {
             hash,
             createdAt: new Date(),
         }
-        const receivedEvent = AuditEventFactory.documentReceived(document.id, actor);
-
-        await this.audit.record(receivedEvent);
 
         await this.repository.save(document);
 
         const storedEvent = AuditEventFactory.documentStored(document.id, actor);
-
         await this.audit.record(storedEvent)
 
         return {id: document.id, hash: hash};

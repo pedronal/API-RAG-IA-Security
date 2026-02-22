@@ -3,8 +3,11 @@ import {WebCryptoIntegrityService} from "./infraestructure/integrity/WebCryptoIn
 import {ConsoleAuditService} from "./infraestructure/audit/ConsoleAuditService";
 import {MemoryDocumentRepository} from "./infraestructure/document/MemoryDocumentRepository";
 import {IngestDocumentUseCase} from "./domain/document/IngestDocumentUseCase";
+import {registerDocumentRoutes} from "./api/DocumentsRoutes";
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
+
+    const app = Fastify({logger: true});
 
     const integrity = new WebCryptoIntegrityService();
     const audit = new ConsoleAuditService();
@@ -12,7 +15,9 @@ async function bootstrap() {
 
     const useCase = new IngestDocumentUseCase(integrity, audit, repository);
 
-    const result = await useCase.execute('Hello World', 'system')
+    registerDocumentRoutes(app, useCase);
 
-    console.log('Result: ', result);
+    await app.listen({port: 3000});
 }
+
+bootstrap();
