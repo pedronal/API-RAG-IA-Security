@@ -7,7 +7,14 @@ import {registerDocumentRoutes} from "./api/DocumentsRoutes";
 
 async function bootstrap(): Promise<void> {
 
-    const app = Fastify({logger: true});
+    const app = Fastify({
+        logger: true,
+        ajv: {
+            customOptions: {
+                coerceTypes: false,
+            }
+        }
+    });
 
     const integrity = new WebCryptoIntegrityService();
     const audit = new ConsoleAuditService();
