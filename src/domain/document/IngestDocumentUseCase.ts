@@ -12,20 +12,20 @@ export class IngestDocumentUseCase {
     ) {}
 
 
-    async execute(content: string, actor: string): Promise<{id: string; hash: string}> {
+    async execute(content: string, actor: string): Promise<StoredDocument> {
         const hash = await this.integrity.generate(content);
-        const document: StoredDocument = {
-            id: crypto.randomUUID(),
+        const document: StoredDocument = new StoredDocument(
+            crypto.randomUUID(),
             content,
             hash,
-            createdAt: new Date(),
-        }
+            new Date(),
+    )
 
         await this.repository.save(document);
 
         const storedEvent = AuditEventFactory.documentStored(document.id, actor);
         await this.audit.record(storedEvent)
 
-        return {id: document.id, hash: hash};
+        return document;
     }
 }
