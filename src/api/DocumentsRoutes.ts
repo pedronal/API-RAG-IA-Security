@@ -4,14 +4,15 @@ import {DocumentResponseDTO} from "./dto/DocumentResponseDTO";
 
 export function registerDocumentRoutes(
     app: FastifyInstance,
-    useCase: IngestDocumentUseCase
+    useCase: IngestDocumentUseCase,
+    path: string
 ) {
     app.post<{
         Body: {
             content: string;
             actor: string;
         }
-    }>('/documents', {
+    }>(path, {
         schema: {
             body: {
                 type: 'object',
