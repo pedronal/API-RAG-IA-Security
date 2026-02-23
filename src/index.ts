@@ -1,11 +1,14 @@
 import Fastify from 'fastify';
 import {WebCryptoIntegrityService} from "./infraestructure/integrity/WebCryptoIntegrityService";
 import {ConsoleAuditService} from "./infraestructure/audit/ConsoleAuditService";
-import {MemoryDocumentRepository} from "./infraestructure/document/MemoryDocumentRepository";
 import {IngestDocumentUseCase} from "./domain/document/IngestDocumentUseCase";
 import {registerDocumentRoutes} from "./api/DocumentsRoutes";
+import {initDatabase} from "./infraestructure/db/initDatabase";
+import {SqliteDocumentRepository} from "./infraestructure/document/SqliteDocumentRepository";
 
 async function bootstrap(): Promise<void> {
+
+    await initDatabase();
 
     const app = Fastify({
         logger: true,
@@ -16,13 +19,10 @@ async function bootstrap(): Promise<void> {
         }
     });
 
-    const integrity = new WebCryptoIntegrityService();
-    const audit = new ConsoleAuditService();
-    const repository = new MemoryDocumentRepository();
-
-    const useCase = new IngestDocumentUseCase(integrity, audit, repository);
-
-    registerDocumentRoutes(app, useCase);
+    registerDocumentRoutes(app,  new IngestDocumentUseCase(
+        new WebCryptoIntegrityService(),
+        new ConsoleAuditService(),
+        new SqliteDocumentRepository()));
 
     await app.listen({port: 3000});
 }
